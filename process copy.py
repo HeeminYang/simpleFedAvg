@@ -72,15 +72,9 @@ def fed_avg(client_list, total_round, epoch_per_round, sample_rate, num_class, v
             # if r is not 1:
             for _ in range(epoch_per_round):
                 client_list[idx].common_update()
-        
-            # elif r is 1:
-            #     for _ in range(30):
-            #         client_list[idx].local_update()
 
         sampled_list = []
         for idx in sampled_client_indices:
-            # acc, loss = client_list[idx].local_test(valid_loader)
-            # train_logger.info(f'Agent {idx + 1} Accuracy : {acc*100}, Loss : {loss}')
             sampled_list.append(client_list[idx])
 
         # Global update
@@ -88,15 +82,6 @@ def fed_avg(client_list, total_round, epoch_per_round, sample_rate, num_class, v
         train_logger.info('Global update...')
         
         global_model = global_avg(sampled_list)
-        
-    # for idx in tqdm(sampled_client_indices, desc='Virtical_FL'):
-    #     # if r is not 1:
-    #     for _ in range(epoch_per_round):
-    #         client_list[idx].local_update()
-    
-    # for idx in tqdm(sampled_client_indices, desc='final_test'):
-    #     client_list[idx].final_update()
-
     for cli in client_list:
         cli.model.load_state_dict(global_model)
 
@@ -118,50 +103,3 @@ def fed_avg(client_list, total_round, epoch_per_round, sample_rate, num_class, v
     acc_list.append(global_acc)
     loss_list.append(global_loss)
     train_logger.info('-'*40)
-
-    with open('result/outputs_list.pkl', 'wb') as f:
-        pickle.dump(outputs_list, f)
-    with open('result/labels_list.pkl', 'wb') as f:
-        pickle.dump(labels_list, f)  
-    with open('result/acc_list.pkl', 'wb') as f:
-        pickle.dump(acc_list, f) 
-    with open('result/loss_list.pkl', 'wb') as f:
-        pickle.dump(loss_list, f) 
-    
-    # 눈금 조정(적은 라운드, 큰 라운드 모두 맞게)
-    if total_round >= 25:
-        if total_round >= 100:
-            if total_round%10 ==0:
-                xticks_mj = int(total_round/10)
-                xticks_mi = 5
-            else:
-                xticks_mj = 25
-                xticks_mi = 5
-        else:
-            xticks_mj = 10
-            xticks_mi = 1
-    else:
-        xticks_mj, xticks_mi = 1, 1
-
-    fig = plt.figure()
-    fig.set_facecolor('white')
-    ax1 = fig.add_subplot()
-    ax1.set_xlim([0, total_round+2])
-    ax1.set_ylim([0, 1])
-    ax1.set_ylabel('Accuracy')
-    ax1.xaxis.set_major_locator(MultipleLocator(xticks_mj))
-    ax1.xaxis.set_minor_locator(MultipleLocator(xticks_mi))
-    ax1.yaxis.set_major_locator(MultipleLocator(0.05))  
-    ax1.yaxis.set_minor_locator(MultipleLocator(0.025))
-    ax1.set_xlabel('Round')
-    ax1.plot(range(1,total_round+1), acc_list, label = 'Accuracy')
-    ax2 = ax1.twinx()
-    ax2.set_ylim([0.0, 0.3])
-    ax2.set_ylabel('Loss')
-    ax2.yaxis.set_major_locator(MultipleLocator(0.05))
-    ax2.yaxis.set_minor_locator(MultipleLocator(0.01))
-    ax2.plot(range(1,total_round+1), loss_list, label = 'Loss', c='orange')
-    ax1.legend(loc='upper right')
-    ax2.legend(loc='upper left')
-
-    plt.savefig(f'result/img/{now}_Experiment_FedAvg_class{num_class}_sample{sample_rate}.png', dpi=200, facecolor='#eeeeee')

@@ -10,9 +10,7 @@ os.environ["CUDA_VISIBLE_DEVICES"] = "0, 1"
 class agent():
     def __init__(self, model, local_dataloader, common_dataloader, client_name, device):
         
-        self.name = client_name         # Save node's name for logging.
-        self.poor = False               # Set False at initialization.
-        self.sitted_round = 0
+        self.name = client_name
         self.local_dataloader = local_dataloader
         self.common_dataloader = common_dataloader
         self.sample_size = len(self.common_dataloader.dataset)
@@ -24,9 +22,6 @@ class agent():
 
     def common_update(self):
         
-        # Initiazie poor state every round
-        
-
         self.model.train()
         
 
@@ -42,14 +37,11 @@ class agent():
             
             loss = self.criterion(output, label)
             
-
             loss.backward()
             
             self.optimizer.step()
     
     def local_update(self):
-        
-        # Initiazie poor state every round
         
         self.model.train()
         

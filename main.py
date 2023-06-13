@@ -30,13 +30,13 @@ class MLP(nn.Module):
     def __init__(self):
         super(MLP, self).__init__()
         self.layers = nn.Sequential(
-            nn.Linear(20, 128),  # 입력 데이터의 크기를 10으로 가정
+            nn.Linear(20, 128),
             nn.ReLU(),
             nn.Linear(128, 64),
             nn.ReLU(),
             nn.Linear(64, 32),
             nn.ReLU(),
-            nn.Linear(32, 2)   # 출력 클래스의 수를 2로 가정
+            nn.Linear(32, 2)
         )
         
     def forward(self, x):
