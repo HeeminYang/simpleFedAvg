@@ -16,5 +16,5 @@ git clone https://github.com/HeeminYang/simpleFedAvg.git
 ## Run Experiment
 - Run the following command to run the experiment.
 ```bash
-python main.py --config=./exps/hider.json
+python main.py
 ```
