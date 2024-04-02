@@ -8,3 +8,13 @@ Run the following commands to clone this repository and install the required pac
 ```bash
 git clone https://github.com/HeeminYang/simpleFedAvg.git
 ```
+
+## Hyperparameters
+- **num_node**: The total number of client in the federated learning.
+- **total_round**: The number of round on federated learning.
+
+## Run Experiment
+- Run the following command to run the experiment.
+```bash
+python main.py --config=./exps/hider.json
+```
